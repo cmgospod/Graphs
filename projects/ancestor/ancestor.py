@@ -1,14 +1,12 @@
-from graph import Graph
-
 def earliest_ancestor(ancestors, starting_node):
-    g = Graph()
+    graph = {}
     for tuple in ancestors:
         for vertex in tuple:
-            if vertex not in g.vertices:
-                g.add_vertex(vertex)
-        g.add_edge(tuple[1], tuple[0])
+            if vertex not in graph:
+                graph[vertex] = set()
+        graph[tuple[1]].add(tuple[0])
 
-    if not g.vertices[starting_node]:
+    if len(graph[starting_node]) == 0:
         return -1
     holdinglist = [starting_node]
     holdinglist2 = []
@@ -16,11 +14,11 @@ def earliest_ancestor(ancestors, starting_node):
     while True:
         flag = False
         for element in holdinglist:
-            if not g.vertices[element]:
+            if len(graph[element]) == 0:
                 candidates.append(element)
             else:
                 flag = True
-                for vertex in g.vertices[element]:
+                for vertex in graph[element]:
                     holdinglist2.append(vertex)
         if flag == False:
             return min(candidates)
@@ -28,7 +26,3 @@ def earliest_ancestor(ancestors, starting_node):
             holdinglist = holdinglist2[:]
             holdinglist2.clear()
             candidates.clear()
-
-#
-# test_ancestors = [(1, 3), (2, 3), (3, 6), (5, 6), (5, 7), (4, 5), (4, 8), (8, 9), (11, 8), (10, 1)]
-# print(earliest_ancestor(test_ancestors, 11))
